@@ -15,7 +15,10 @@ const GuessInput = ({ addGuess }) => {
     setGuess('');
   };
   return (
-    <form className="guess-input-wrapper" onSubmit={handleSubmit}>
+    <form
+      className="guess-input-wrapper"
+      onSubmit={handleSubmit}
+    >
       <label htmlFor="guess-input">Guess!</label>
       <input
         type="text"
