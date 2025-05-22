@@ -3,13 +3,17 @@
  * solving algorithm!
  */
 
+
 export function checkGuess(guess, answer) {
   // This constant is a placeholder that indicates we've successfully
   // dealt with this character (it's correct, or misplaced).
   const SOLVED_CHAR = '✓';
 
   if (!guess) {
-    return null;
+    return Array(answer.length).fill({
+      letter: '',
+      status: undefined
+    });
   }
 
   const guessChars = guess.toUpperCase().split('');

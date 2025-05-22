@@ -2,22 +2,24 @@ import React from 'react';
 
 import { NUM_LETTERS } from '../../constants';
 
-function Guess({ value }) {
-  const getLetters = (guess) => {
-    return [
-      ...guess.slice(0, NUM_LETTERS).split(''),
-      ...Array(NUM_LETTERS).fill(''),
-    ].slice(0, NUM_LETTERS);
-  };
+import { checkGuess } from '../../game-helpers';
+
+function Guess({ value, answer }) {
+  console.log(checkGuess(value, answer));
   return (
     <p className="guess">
-      {getLetters(value).map((letter, lindex) => {
-        return (
-          <span key={lindex} className="cell">
-            {letter}
-          </span>
-        );
-      })}
+      {checkGuess(value, answer).map(
+        (letterData, lindex) => {
+          return (
+            <span
+              key={lindex}
+              className={`cell ${letterData.status}`}
+            >
+              {letterData.letter}
+            </span>
+          );
+        }
+      )}
     </p>
   );
 }
