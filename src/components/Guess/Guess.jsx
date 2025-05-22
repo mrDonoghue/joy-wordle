@@ -5,7 +5,6 @@ import { NUM_LETTERS } from '../../constants';
 import { checkGuess } from '../../game-helpers';
 
 function Guess({ value, answer }) {
-  console.log(checkGuess(value, answer));
   return (
     <p className="guess">
       {checkGuess(value, answer).map(
