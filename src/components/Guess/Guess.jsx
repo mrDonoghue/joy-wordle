@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { NUM_LETTERS } from '../../constants';
-
 import { checkGuess } from '../../game-helpers';
 
 function Guess({ value, answer }) {
