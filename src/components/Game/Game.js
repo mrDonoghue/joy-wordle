@@ -32,20 +32,22 @@ function Game() {
     setNumGuesses((prevNum) => prevNum+1);
   }
   return (
-  <main>
+  <>
     <GuessResults guesses={guesses} answer={answer}/>
     {
       (gameWon || gameLost
-        ? <Banner 
+        ? <>
+          <Banner 
             status={gameWon ? "win" : "lost"} 
             numGuesses={numGuesses} 
             answer={answer} 
           />
+        </>
         : <GuessInput addGuess={addGuess}/>
       )
 
     }
-  </main>
+  </>
   );
 }
 
