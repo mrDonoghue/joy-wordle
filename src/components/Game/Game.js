@@ -3,51 +3,68 @@ import React, { useState } from 'react';
 import { sample } from '../../utils';
 import { WORDS } from '../../data';
 // import {range} from '../../utils';
-import {NUM_OF_GUESSES_ALLOWED} from '../../constants';
+import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 import GuessInput from '../GuessInput';
 import GuessResults from '../GuessResults';
 import Banner from '../Banner';
+import { isValidWord } from '../../game-helpers';
 
-// Pick a random word on every pageload.
-const answer = sample(WORDS);
-// To make debugging easier, we'll log the solution in the console.
-console.info({ answer });
-
-const initialGuessesState = Array(NUM_OF_GUESSES_ALLOWED).fill("");
+const initialGuessesState = Array(
+  NUM_OF_GUESSES_ALLOWED
+).fill('');
 
 function Game() {
-  const [guesses, setGuesses] = useState(initialGuessesState);
+  const [answer, setAnswer] = useState(() => sample(WORDS));
+  const [guesses, setGuesses] = useState(
+    initialGuessesState
+  );
   const [numGuesses, setNumGuesses] = useState(0);
   const gameWon = guesses.indexOf(answer) >= 0;
-  const gameLost = !gameWon && numGuesses >= NUM_OF_GUESSES_ALLOWED;
-  
-  const addGuess = (guess) => {
-    if (numGuesses >= NUM_OF_GUESSES_ALLOWED) return;
+  const gameLost =
+    !gameWon && numGuesses >= NUM_OF_GUESSES_ALLOWED;
 
-    setGuesses((prevGuesses) => (
-      [...prevGuesses.slice(0,numGuesses),
-        guess, 
-        ...prevGuesses.slice(numGuesses+1)]
-    ));
-    setNumGuesses((prevNum) => prevNum+1);
-  }
+  const handleReset = () => {
+    setAnswer((prevAns) => {
+      let newAns = prevAns;
+      while (newAns === prevAns) {
+        newAns = sample(WORDS);
+      }
+      return newAns;
+    });
+    setGuesses(initialGuessesState);
+    setNumGuesses(0);
+  };
+
+  const handleGuess = (guess) => {
+    if (numGuesses >= NUM_OF_GUESSES_ALLOWED) return null;
+
+    if (isValidWord(guess) === false) {
+      return false; // Invalid guess
+    }
+    setGuesses((prevGuesses) => [
+      ...prevGuesses.slice(0, numGuesses),
+      guess,
+      ...prevGuesses.slice(numGuesses + 1),
+    ]);
+    setNumGuesses((prevNum) => prevNum + 1);
+    return true;
+  };
   return (
-  <>
-    <GuessResults guesses={guesses} answer={answer}/>
-    {
-      (gameWon || gameLost
-        ? <>
-          <Banner 
-            status={gameWon ? "win" : "lost"} 
-            numGuesses={numGuesses} 
-            answer={answer} 
+    <>
+      <GuessResults guesses={guesses} answer={answer} />
+      {gameWon || gameLost ? (
+        <>
+          <Banner
+            status={gameWon ? 'win' : 'lost'}
+            numGuesses={numGuesses}
+            answer={answer}
+            resetFunction={handleReset}
           />
         </>
-        : <GuessInput addGuess={addGuess}/>
-      )
-
-    }
-  </>
+      ) : (
+        <GuessInput handleGuess={handleGuess} />
+      )}
+    </>
   );
 }
 

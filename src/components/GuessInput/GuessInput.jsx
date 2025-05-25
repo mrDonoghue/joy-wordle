@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const GuessInput = ({ addGuess }) => {
+const GuessInput = ({ handleGuess }) => {
   const [guess, setGuess] = useState('');
 
   const handleChange = (e) => {
@@ -11,7 +11,14 @@ const GuessInput = ({ addGuess }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addGuess(guess);
+    const successfulGuess = handleGuess(guess);
+    if (successfulGuess === null) {
+      console.log('ERROR');
+      throw new Error('Guess attempts exceeded');
+    } else if (successfulGuess === false) {
+      console.log('Invalid guess');
+      // TODO: Add visual feedback for invalid guess
+    }
     setGuess('');
   };
   return (

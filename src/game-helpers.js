@@ -1,8 +1,13 @@
-/**
- * Thanks to Github user dylano for supplying a more-accurate
- * solving algorithm!
- */
+import { WORDS } from './data.js';
 
+export function isValidWord(word) {
+  if (!word || word.length !== 5) {
+    return false;
+  }
+
+  const upperWord = word.toUpperCase();
+  return WORDS.includes(upperWord);
+}
 
 export function checkGuess(guess, answer) {
   // This constant is a placeholder that indicates we've successfully
