@@ -1,6 +1,11 @@
 import React from 'react';
 
-const Banner = ({ status, numGuesses, answer }) => {
+const Banner = ({
+  status,
+  numGuesses,
+  answer,
+  resetFunction,
+}) => {
   const className = `${
     status === 'win' ? 'happy' : 'sad'
   } banner`;
@@ -25,6 +30,7 @@ const Banner = ({ status, numGuesses, answer }) => {
           </>
         )}
       </p>
+      <button onClick={resetFunction}>Play Again</button>
     </div>
   );
 };
