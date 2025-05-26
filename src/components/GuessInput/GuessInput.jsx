@@ -26,7 +26,6 @@ const GuessInput = ({ handleGuess }) => {
       className="guess-input-wrapper"
       onSubmit={handleSubmit}
     >
-      <label htmlFor="guess-input">Guess!</label>
       <input
         type="text"
         id="guess-input"
@@ -38,6 +37,7 @@ const GuessInput = ({ handleGuess }) => {
         title="5 letters exactly!"
         required
       />
+      <label htmlFor="guess-input">Guess!</label>
     </form>
   );
 };

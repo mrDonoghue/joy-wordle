@@ -3,15 +3,51 @@ import React, { useState } from 'react';
 import { sample } from '../../utils';
 import { WORDS } from '../../data';
 // import {range} from '../../utils';
-import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
+import { NUM_OF_GUESSES_ALLOWED, LETTER_STATUS } from '../../constants';
 import GuessInput from '../GuessInput';
 import GuessResults from '../GuessResults';
 import Banner from '../Banner';
-import { isValidWord } from '../../game-helpers';
+import { checkGuess, isValidWord } from '../../game-helpers';
+import LetterStatusGroup from '../LetterStatusGroup';
 
 const initialGuessesState = Array(
   NUM_OF_GUESSES_ALLOWED
 ).fill('');
+
+// create the starting letters data with each letter's status set to 'unknown'
+const initialLettersData = Array.from(
+  { length: 26 },
+  (_, i) => ({
+    letter: String.fromCharCode(65 + i), // A-Z
+    status: LETTER_STATUS.UNKNOWN,
+  })
+);
+
+const updateLettersData = ({lettersData, guesses, answer}) => {
+  const updatedData = JSON.parse(JSON.stringify(lettersData));
+  guesses.forEach((guess) => {
+    const guessLetters = checkGuess(guess, answer);
+    guessLetters.forEach((letter) => {
+      const index = updatedData.findIndex(
+        (data) => data.letter === letter.letter
+      );
+      if (index === -1 || updatedData[index].status === LETTER_STATUS.CORRECT) return; 
+      // Skip if letter not found or already marked as correct
+      if (letter.status === LETTER_STATUS.CORRECT) {
+        updatedData[index].status = LETTER_STATUS.CORRECT;
+        return; // No need to check further for this letter
+      }
+
+      if (updatedData[index].status === LETTER_STATUS.PRESENT) return;
+
+      updatedData[index].status = letter.status;
+      });
+    });
+  console.log(guesses);
+  console.log(initialLettersData);
+  console.log(updatedData);
+  return updatedData;
+};
 
 function Game() {
   const [answer, setAnswer] = useState(() => sample(WORDS));
@@ -22,6 +58,8 @@ function Game() {
   const gameWon = guesses.indexOf(answer) >= 0;
   const gameLost =
     !gameWon && numGuesses >= NUM_OF_GUESSES_ALLOWED;
+
+  const lettersData = updateLettersData({lettersData:initialLettersData, guesses, answer});
 
   const handleReset = () => {
     setAnswer((prevAns) => {
@@ -49,6 +87,7 @@ function Game() {
     setNumGuesses((prevNum) => prevNum + 1);
     return true;
   };
+
   return (
     <>
       <GuessResults guesses={guesses} answer={answer} />
@@ -62,7 +101,10 @@ function Game() {
           />
         </>
       ) : (
-        <GuessInput handleGuess={handleGuess} />
+        <>
+          <GuessInput handleGuess={handleGuess} />
+          <LetterStatusGroup lettersData={lettersData} />
+        </>
       )}
     </>
   );

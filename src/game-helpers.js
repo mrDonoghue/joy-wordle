@@ -1,4 +1,5 @@
 import { WORDS } from './data.js';
+import {LETTER_STATUS} from './constants.js';
 
 export function isValidWord(word) {
   if (!word || word.length !== 5) {
@@ -17,7 +18,7 @@ export function checkGuess(guess, answer) {
   if (!guess) {
     return Array(answer.length).fill({
       letter: '',
-      status: undefined
+      status: LETTER_STATUS.UNKNOWN,
     });
   }
 
@@ -45,12 +46,12 @@ export function checkGuess(guess, answer) {
       continue;
     }
 
-    let status = 'incorrect';
+    let status = LETTER_STATUS.INCORRECT; ;
     const misplacedIndex = answerChars.findIndex(
       (char) => char === guessChars[i]
     );
     if (misplacedIndex >= 0) {
-      status = 'misplaced';
+      status =  LETTER_STATUS.PRESENT;
       answerChars[misplacedIndex] = SOLVED_CHAR;
     }
 
