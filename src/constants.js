@@ -4,6 +4,6 @@ export const NUM_LETTERS = 5;
 export const LETTER_STATUS = {
   CORRECT: 'correct',
   PRESENT: 'present',
-  INCORRECT: 'incorrect',
   UNKNOWN: 'unknown',
+  INCORRECT: 'incorrect',
 };
