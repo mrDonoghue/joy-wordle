@@ -74,8 +74,17 @@ function Game() {
     if (numGuesses >= NUM_OF_GUESSES_ALLOWED) return null;
 
     if (isValidWord(guess) === false) {
-      return false; // Invalid guess
+      return "not recognized"; // Invalid guess
     }
+    let alreadyGuessed = false;
+    guesses.forEach((g) => {
+      if (g.toUpperCase() === guess.toUpperCase()) {
+        alreadyGuessed = true; // Guess already made
+      }
+    });
+    if (alreadyGuessed) {
+      return "already guessed";
+    } 
     setGuesses((prevGuesses) => [
       ...prevGuesses.slice(0, numGuesses),
       guess,

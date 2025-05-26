@@ -46,12 +46,17 @@ const GuessInput = ({ handleGuess }) => {
       return;
     }
     const guess = letters.join('');
-    const successfulGuess = handleGuess(guess);
-    if (successfulGuess === null) {
+    const guessStatus = handleGuess(guess);
+    if (guessStatus === null) {
       console.log('ERROR');
       throw new Error('Guess attempts exceeded');
-    } else if (successfulGuess === false) {
+    } else if (guessStatus === 'not recognized') {
       setInvalidGuess('not-recognized');
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+      return;
+    } else if (guessStatus === 'already guessed') {
+      setInvalidGuess('already-guessed');
       setShake(true);
       setTimeout(() => setShake(false), 600);
       return;
@@ -131,7 +136,9 @@ const GuessInput = ({ handleGuess }) => {
           >
             {invalidGuess === 'incomplete'
               ? 'Please fill in all 5 letters.'
-              : 'Word not recognized'}
+              : invalidGuess === 'already-guessed'
+              ? 'You have already guessed that word.'
+              : 'Word not recognized. Please try another.'}
           </div>
         )}
       </fieldset>
