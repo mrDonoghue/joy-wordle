@@ -8,7 +8,7 @@ import GuessInput from '../GuessInput';
 import GuessResults from '../GuessResults';
 import Banner from '../Banner';
 import { checkGuess, isValidWord } from '../../game-helpers';
-import LetterStatusGroup from '../LetterStatusGroup';
+import LetterHintDisplay from '../LetterHintDisplay';
 
 const initialGuessesState = Array(
   NUM_OF_GUESSES_ALLOWED
@@ -43,9 +43,6 @@ const updateLettersData = ({lettersData, guesses, answer}) => {
       updatedData[index].status = letter.status;
       });
     });
-  console.log(guesses);
-  console.log(initialLettersData);
-  console.log(updatedData);
   return updatedData;
 };
 
@@ -103,7 +100,7 @@ function Game() {
       ) : (
         <>
           <GuessInput handleGuess={handleGuess} />
-          <LetterStatusGroup lettersData={lettersData} />
+          <LetterHintDisplay lettersData={lettersData} />
         </>
       )}
     </>
