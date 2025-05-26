@@ -82,7 +82,7 @@ const GuessInput = ({ handleGuess }) => {
       >
         <legend
           id="guess-legend"
-          style={{ position: 'absolute', left: '-9999px' }}
+          className="visually-hidden"
         >
           Enter your 5-letter guess
         </legend>
