@@ -170,6 +170,39 @@ h1 {
   outline-offset: 4px;
 }
 
+.guess-input-cells {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.guess-input-cell {
+  background: white;
+  color: var(--color-gray-100);
+  border: 2px solid var(--color-gray-700);
+  border-radius: var(--radius, 4px);
+  font-size: 2rem;
+  width: 20%;
+  min-width: 2.1em;
+  min-height: 2.1em;
+  aspect-ratio: 1 / 1;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0;
+  outline-offset: 2px;
+  transition: border-color 0.2s;
+}
+
+.guess-input-cell:focus {
+  border-color: var(--color-warning);
+}
+
+.guess-input-cell::placeholder {
+  color: var(--color-gray-300);
+  opacity: 1;
+}
+
 .banner {
   position: fixed;
   left: 0;
