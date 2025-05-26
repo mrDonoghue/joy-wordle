@@ -1,7 +1,15 @@
 import React, { useState, useRef } from 'react';
 
 const GuessInput = ({ handleGuess }) => {
-  const [letters, setLetters] = useState(['', '', '', '', '']);
+  const [letters, setLetters] = useState([
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]);
+  const [invalidGuess, setInvalidGuess] = useState(false);
+  const [shake, setShake] = useState(false);
   const inputsRef = useRef([]);
 
   const handleChange = (e, idx) => {
@@ -10,6 +18,7 @@ const GuessInput = ({ handleGuess }) => {
     const newLetters = [...letters];
     newLetters[idx] = val;
     setLetters(newLetters);
+    if (invalidGuess) setInvalidGuess(false); // clear error on any change
     if (val && idx < 4) {
       inputsRef.current[idx + 1].focus();
     }
@@ -23,7 +32,6 @@ const GuessInput = ({ handleGuess }) => {
       inputsRef.current[idx - 1].focus();
       e.preventDefault();
     } else if (e.key === 'Enter') {
-      // Manually trigger form submission
       e.preventDefault();
       handleSubmit(e);
     }
@@ -31,15 +39,24 @@ const GuessInput = ({ handleGuess }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (letters.some((l) => !l)) {
+      setInvalidGuess('incomplete');
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+      return;
+    }
     const guess = letters.join('');
     const successfulGuess = handleGuess(guess);
     if (successfulGuess === null) {
       console.log('ERROR');
       throw new Error('Guess attempts exceeded');
     } else if (successfulGuess === false) {
-      console.log('Invalid guess');
-      // TODO: Add visual feedback for invalid guess
+      setInvalidGuess('not-recognized');
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+      return;
     }
+    setInvalidGuess(false);
     setLetters(['', '', '', '', '']);
     inputsRef.current[0].focus();
   };
@@ -47,7 +64,9 @@ const GuessInput = ({ handleGuess }) => {
   return (
     <form
       id="guess-input-form"
-      className="guess-input-wrapper"
+      className={`guess-input-wrapper${
+        shake ? ' shake' : ''
+      }`}
       onSubmit={handleSubmit}
       autoComplete="off"
     >
@@ -56,7 +75,10 @@ const GuessInput = ({ handleGuess }) => {
         aria-labelledby="guess-legend"
         style={{ border: 'none', padding: 0, margin: 0 }}
       >
-        <legend id="guess-legend" style={{ position: 'absolute', left: '-9999px' }}>
+        <legend
+          id="guess-legend"
+          style={{ position: 'absolute', left: '-9999px' }}
+        >
           Enter your 5-letter guess
         </legend>
         <div
@@ -79,9 +101,9 @@ const GuessInput = ({ handleGuess }) => {
                 inputMode="text"
                 maxLength={1}
                 value={letter}
-                onChange={e => handleChange(e, idx)}
-                onKeyDown={e => handleKeyDown(e, idx)}
-                ref={el => (inputsRef.current[idx] = el)}
+                onChange={(e) => handleChange(e, idx)}
+                onKeyDown={(e) => handleKeyDown(e, idx)}
+                ref={(el) => (inputsRef.current[idx] = el)}
                 className="cell guess-input-cell"
                 aria-label={`Letter ${idx + 1}`}
                 aria-describedby="guess-desc"
@@ -94,8 +116,24 @@ const GuessInput = ({ handleGuess }) => {
           </div>
         </div>
         <div id="guess-desc" className="visually-hidden">
-          5 input boxes for your guess. Each box is for one letter, left to right.
+          5 input boxes for your guess. Each box is for one
+          letter, left to right.
         </div>
+        {invalidGuess && (
+          <div
+            className="guess-input-error"
+            role="alert"
+            aria-live="assertive"
+            style={{
+              textAlign: 'center',
+              marginTop: '0.5rem',
+            }}
+          >
+            {invalidGuess === 'incomplete'
+              ? 'Please fill in all 5 letters.'
+              : 'Word not recognized'}
+          </div>
+        )}
       </fieldset>
     </form>
   );
